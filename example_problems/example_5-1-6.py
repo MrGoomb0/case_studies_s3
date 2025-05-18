@@ -23,7 +23,7 @@ def main():
     # Non-convergence for Euler integrator if 'u_n' and 'u_n1/2' is used.
     if EXPERIMENT_1:
         N = 40
-        F = integrator(f, T=T, N=N, method='euler', step_wise=False)
+        F = rungakutta(f, T=T, N=N, method='euler', step_wise=False)
         u_opt = nlpSolver(N=N, F=F, step_wise=False)
         plotSolution(u_opt=u_opt, T=T, N=N, F=F, step_wise=False, plot_x=False, plot_u_e=False, plot_x_e=False)
     
@@ -33,7 +33,7 @@ def main():
         errors = np.zeros(len(N_list))
         step_wise=True
         for i, N in enumerate(N_list):
-            F = integrator(f, T=T, N=N, method='euler', step_wise=step_wise)
+            F = rungakutta(f, T=T, N=N, method='euler', step_wise=step_wise)
             u_opt = nlpSolver(N=N, F=F, step_wise=step_wise)
             errors[i] = calculateError(u_opt, N, F, step_wise=step_wise)
         orders = np.zeros(len(N_list) - 1)
@@ -52,7 +52,7 @@ def main():
         errors = np.zeros(len(N_list))
         step_wise=True
         for i, N in enumerate(N_list):
-            F = integrator(f, T=T, N=N, method='heun', step_wise=step_wise)
+            F = rungakutta(f, T=T, N=N, method='heun', step_wise=step_wise)
             u_opt = nlpSolver(N=N, F=F, step_wise=step_wise)
             errors[i] = calculateError(u_opt, N, F, step_wise=step_wise)
         orders = np.zeros(len(N_list) - 1)
@@ -75,7 +75,7 @@ Function that returns an integrator given the derivative function
     ex: 'euler', 'heun'
  - step_wise: Indicates if only 'u_n' is used, or also 'u_n1/2'
 """
-def integrator(f, T, N, method="euler", step_wise=True):
+def rungakutta(f, T, N, method="euler", step_wise=True):
     h = T / N
     
     X0 = MX.sym('X0')
