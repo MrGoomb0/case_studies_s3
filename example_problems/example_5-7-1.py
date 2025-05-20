@@ -1,3 +1,6 @@
+"""
+Implementation of the Example 5.7.1 in 'Optimal Control of ODEs and DAEs' by Matthis Gerdts.
+"""
 from casadi import *
 import numpy as np 
 import matplotlib.pyplot as plt
