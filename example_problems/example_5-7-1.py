@@ -35,6 +35,7 @@ def main():
     ax3.plot(t, x2_opt)
     ax4.plot(t, x3_opt)
     plt.show()
+
 """
 Function that returns a classic 4step Runga Kutta integrator given the derivative function
 ---
@@ -82,6 +83,13 @@ def cranknicholson(f, T, N):
     F = Function('F', [X0, U], [Xk], ['x0', 'p'], ['xf'])
     return F
 
+"""
+Solves the problem for a given number of steps and an integrater.
+---
+ - N: Number of steps
+ - F: Integrator
+ - step_wise: Indicates if only 'u_n' is used, or also 'u_n1/2'
+"""
 def nlpSolver(N, F):
     w = []
     w0 = []
