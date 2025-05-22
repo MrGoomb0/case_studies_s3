@@ -117,3 +117,43 @@ def rungakutta(f, T, N, M):
 
     F = Function('F', [X0, J0, T0, U], [Xk, Jk, Tk], ['x0', 'j0', 't0', 'p'], ['xf', 'jf', 'tf'])
     return F
+
+"""
+Returns a integrator based on the Dormanad-Prince 6 stage runga kutta method of order 5.
+---
+## Parameters:
+ - f : derivative function
+ - T : end time
+ - N : number of time steps
+ - M : amount of iterations per time step
+
+ ## Return
+ - F : integrator that can be used to solve the 2D problem
+"""
+def rungakutta6(f, T, N, M):
+    h = T / N / M
+
+    # X0 = MX.sym('X0', 5)
+    X0 = MX.sym('X0')
+    J0 = MX.sym('J0')
+    Y0 = vertcat(X0, J0)
+    T0 = MX.sym('T0')
+    U = MX.sym('U')
+
+    Yk = Y0
+    Tk = T0
+    Jk = J0
+
+    for j in range(M):
+        k1 = f(Yk, U, Tk)
+        k2 = f(Yk + h * (1/5 * k1), U, Tk + h * 1/5)
+        k3 = f(Yk + h * (3/40 * k1 + 9 / 40 * k2), U, Tk + h * 3/10)
+        k4 = f(Yk + h * (44/55 * k1 - 56/15 * k2 + 32/9 * k3), U, Tk  + h * 4/5)
+        k5 = f(Yk + h * (19372 / 6561 * k1 - 25360 / 2187 * k2 + 64448 / 6561 * k3 - 212/729 * k4), U, Tk + h * 8/9)
+        k6 = f(Yk + h * (9017/3168 * k1 - 355/33 * k2 + 46732/5247 * k3 + 49/176 * k4 - 5103/18656 * k5), U, Tk + h)
+        Yk = Yk + h * (35/384 * k1 + 500/1113 * k3 + 125/192 * k4 - 2187/6784 * k5 + 11/84 * k6)
+    Xk = Yk[0:5]
+    Jk = Yk[5]
+
+    F = Function('F', [X0, J0, T0, U], [Xk, Jk, Tk], ['x0', 'j0', 't0', 'p'], ['xf', 'jf', 'tf'])
+    return F
