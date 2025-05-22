@@ -55,7 +55,7 @@ def nlpsolver(N: int, F: Function, initial_estimate: np.array, t_f=T_F, gamma_f 
         Fk = F(x0=Xk, j0=Jk, t0=Tk, p=Uk)
         Tk = Fk['tf']
         Xk_end = Fk['xf']
-        Jk = Fk['jf']
+        Jk = Jk + Fk['jf']
 
         Xk = MX.sym('X_' + str(k+1), 5)
         w += [Xk]
