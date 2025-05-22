@@ -29,7 +29,7 @@ Initial implementation of a simple solver that uses multiple shooting to solve t
  - gamma_f : the final value of gamma_f (use for homopty)
  - alpha_max : the max value for alpha (use for homopoty)
 """
-def nlpsolver(N: int, F: Function, initial_estimate: np.array, t_f=T_F, gamma_f : float =GAMMA_F, alpha_max : float =ALPHA_MAX):
+def nlpsolver(N: int, F: Function, initial_estimate: np.array, u_init_estimate: np.array, t_f=T_F, gamma_f : float =GAMMA_F, alpha_max : float =ALPHA_MAX):
     Tk = 0
     w = []
     w0 = []
@@ -50,7 +50,7 @@ def nlpsolver(N: int, F: Function, initial_estimate: np.array, t_f=T_F, gamma_f 
         w += [Uk]
         lbw += [U_MIN]
         ubw += [U_MAX]
-        w0 += [U_MAX]
+        w0 += [u_init_estimate[k]]
 
         Fk = F(x0=Xk, j0=Jk, t0=Tk, p=Uk)
         Tk = Fk['tf']
