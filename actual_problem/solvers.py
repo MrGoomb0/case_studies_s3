@@ -23,7 +23,7 @@ U_MIN = - U_MAX
 Initial implementation of a simple solver that uses multiple shooting to solve the 2D problem.
 ---
 ## Parameters
- - N : number of time steps
+ - N : number of intervals
  - F : integrator
  - initial_estimate : initial estimate for the problem np.array with size = (N + 1, 5) (use for homopoty)
  - gamma_f : the final value of gamma_f (use for homopty)
