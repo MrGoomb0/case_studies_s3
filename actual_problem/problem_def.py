@@ -49,7 +49,7 @@ Function initialises all the state and control variables and return the derivati
 ## Return
  - f : derivative function
 """
-def problem2D(windmodel, k=1, q=2):
+def problem2D(windmodel, k=1, q=2, N_wind=None, degree=None):
     t = MX.sym('t')
 
     x1 = MX.sym('x1')   # x
@@ -60,7 +60,10 @@ def problem2D(windmodel, k=1, q=2):
 
     u = MX.sym('u')
 
-    WX, WH, WXdot, WHdot = windmodel(x1, x2, x3, x4, t, k)
+    if N_wind is not None and degree is not None:
+        WX, WH, WXdot, WHdot = windmodel(x1, x2, x3, x4, t, k, degree, N_wind)
+    else:
+        WX, WH, WXdot, WHdot = windmodel(x1, x2, x3, x4, t, k)
 
     x1dot = x3 * cos(x4) + WX
     x2dot = x3 * sin(x4) + WH

@@ -133,8 +133,7 @@ Returns a integrator based on the Dormanad-Prince 6 stage runga kutta method of 
 def rungakutta6(f, T, N, M):
     h = T / N / M
 
-    # X0 = MX.sym('X0', 5)
-    X0 = MX.sym('X0')
+    X0 = MX.sym('X0', 5)
     J0 = MX.sym('J0')
     Y0 = vertcat(X0, J0)
     T0 = MX.sym('T0')
