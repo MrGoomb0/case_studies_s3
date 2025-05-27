@@ -18,7 +18,7 @@ T_0 = 0
 T_SIGMA = (1 - BETA0) / BETA0DOT
 T_F = 40
 
-ALPHA_STAR = 1
+ALPHA_STAR = 12 / 180 * pi
 ALPHA_MAX = 17.2 / 180 * pi      # Has to be in rad.
 
 A0 = 10.4456 * 1e5
