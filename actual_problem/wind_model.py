@@ -50,7 +50,7 @@ def windModel(x: MX.sym, h: MX.sym, V: MX.sym, gamma: MX.sym, t: MX.sym, k : flo
             )
     B_x = if_else(x <= 4100,
                 if_else(x <= 500, 3*d*x**2 + 4*e*x**3, 51 * 4 * (c*(x - 2300))**3 * exp(-c*(x - 2300)**4)),
-                if_else(x <= 4600, - 3 * d * (4600 - x)**2 + 4 * e * (4600 - x)**3, 0)
+                if_else(x <= 4600, - 3 * d * (4600 - x)**2 - 4 * e * (4600 - x)**3, 0)
             )
     
     # Definition of the wind variables
@@ -147,9 +147,9 @@ gives the wind model as described in Pesch et al.
  - WXdot : time derivative of the horizontal wind field
  - WHdot : time derivative of the vertical wind field
 """
-def windModelChebychev(x: MX.sym, h: MX.sym, V: MX.sym, gamma: MX.sym, t: MX.sym, k : float = 1, degree=5, N=1000):
+def windModelChebychev(x: MX.sym, h: MX.sym, V: MX.sym, gamma: MX.sym, t: MX.sym, k : float = 1, degree=20, N=1000):
     h_star = 1000
-    x_max = 5000 # Makes the functions symetric
+    x_max = 10000 # Take large enough to make sure that larger x are also correct.
     
     x_grid = np.linspace(0, x_max, N)
 
