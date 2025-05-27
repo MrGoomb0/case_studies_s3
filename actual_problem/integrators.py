@@ -31,7 +31,7 @@ def cranknicholson(f, T, N, M=1):
     
     Yk = Y0
     Tk = T0
-    I = Function('I', [Y, U, Tk, Yk], [Y - Yk - h / 2 * (f(Y, U, Tk) + f(Yk, U, Tk + h))], ['y0', 'p', 'tk', 'yk'], ['If'])
+    I = Function('I', [Y, U, Tk, Yk], [Y - Yk - h / 2 * (f(Yk, U, Tk) + f(Y, U, Tk + h))], ['y0', 'p', 'tk', 'yk'], ['If'])
 
     G = rootfinder('G', 'fast_newton', I)
     
