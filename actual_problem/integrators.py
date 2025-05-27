@@ -38,8 +38,8 @@ def cranknicholson(f, T, N, M=1):
     Y_guess = Yk
     for j in range(M):
         Y_guess = G(Y_guess, U, Tk, Yk)
-    Yk = Y_guess
-    Tk = Tk + h
+        Yk = Y_guess
+        Tk = Tk + h
     Xk = Y_guess[0:5]
     Jk = Y_guess[5]
 
@@ -112,6 +112,7 @@ def rungakutta(f, T, N, M):
         k3 = f(Yk + h/2 * k2, U, Tk + h/2)
         k4 = f(Yk + h * k3, U, Tk  + h)
         Yk = Yk + h/6*(k1 +2*k2 +2*k3 +k4)
+        Tk = Tk + h
     Xk = Yk[0:5]
     Jk = Yk[5]
 
@@ -151,6 +152,7 @@ def rungakutta6(f, T, N, M):
         k5 = f(Yk + h * (19372 / 6561 * k1 - 25360 / 2187 * k2 + 64448 / 6561 * k3 - 212/729 * k4), U, Tk + h * 8/9)
         k6 = f(Yk + h * (9017/3168 * k1 - 355/33 * k2 + 46732/5247 * k3 + 49/176 * k4 - 5103/18656 * k5), U, Tk + h)
         Yk = Yk + h * (35/384 * k1 + 500/1113 * k3 + 125/192 * k4 - 2187/6784 * k5 + 11/84 * k6)
+        Tk = Tk + h
     Xk = Yk[0:5]
     Jk = Yk[5]
 
