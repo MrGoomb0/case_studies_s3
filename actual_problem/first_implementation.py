@@ -174,8 +174,8 @@ def cranknicholson(f, T, N, M=1):
     Y_guess = Yk
     for j in range(M):
         Y_guess = G(Y_guess, U, Tk, Yk)
-    Yk = Y_guess
-    Tk = Tk + h
+        Yk = Y_guess
+        Tk = Tk + h
     Xk = Y_guess[0:5]
     Jk = Y_guess[5]
 
