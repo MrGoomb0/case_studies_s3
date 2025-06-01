@@ -1,7 +1,7 @@
 """
 Some utility functions.
 """
-from .multiple_planes_solution_advanced import solve_multiple_plain_ocp_advanced
+from .multiple_planes_solution_advanced import solve_multiple_planes_ocp_advanced
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,18 +20,18 @@ Calculates the mean run-time of two model set-ups.
  - Returns the mean run-time for both model set-ups.
 """
 def timeModels(iterations, k_values, integrators, windmodels):
-    sol_0 = solve_multiple_plain_ocp_advanced(k_values = k_values, windmodel=windmodels[0], integrator=integrators[0], verbose=False)
+    sol_0 = solve_multiple_planes_ocp_advanced(k_values = k_values, windmodel=windmodels[0], integrator=integrators[0], verbose=False)
 
     times = np.zeros((2, iterations))
     for iter in range(iterations):
         selection_index = np.random.randint(0, 2)
         start_time = time()
-        sol = solve_multiple_plain_ocp_advanced(k_values = k_values, windmodel=windmodels[selection_index], integrator=integrators[selection_index], verbose=False)
+        sol = solve_multiple_planes_ocp_advanced(k_values = k_values, windmodel=windmodels[selection_index], integrator=integrators[selection_index], verbose=False)
         times[selection_index, iter] = time() - start_time
 
         selection_index = (selection_index + 1) % 2
         start_time = time()
-        sol = solve_multiple_plain_ocp_advanced(k_values = k_values, windmodel=windmodels[selection_index], integrator=integrators[selection_index], verbose=False)
+        sol = solve_multiple_planes_ocp_advanced(k_values = k_values, windmodel=windmodels[selection_index], integrator=integrators[selection_index], verbose=False)
         times[selection_index, iter] = time() - start_time
 
     average_time_1 = times[0].sum() / iterations

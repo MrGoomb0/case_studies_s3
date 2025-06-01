@@ -72,7 +72,7 @@ alphascale = 0.3  # [rad]
 uscale = 0.0523  # [rad/sec]
 
 
-def solve_multiple_plain_ocp(k_values: np.array, init_estimate=None, h_final=850):
+def solve_multiple_planes_ocp(k_values: np.array, init_estimate=None, h_final=850):
 
     M = len(k_values)  # number of parallel optimization problems
 
