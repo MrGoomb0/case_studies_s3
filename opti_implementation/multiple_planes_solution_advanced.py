@@ -9,7 +9,7 @@ from .wind_models import originalWindModel
 from .integrators import rk4
 
 # Time and discretization
-tf = 40  # final time [sec]
+tf = 100  # final time [sec]
 N = 80  # number of control intervals
 dt = tf / N  # time step
 
@@ -74,7 +74,7 @@ alphascale = 0.3  # [rad]
 uscale = 0.0523  # [rad/sec]
 
 
-def solve_multiple_planes_ocp_advanced(k_values: np.array, init_estimate=None, h_final=850, windmodel=originalWindModel, integrator=rk4, verbose=True):
+def solve_multiple_planes_ocp_advanced(k_values: np.array, init_estimate=None, h_final=None, gamma_final=None, windmodel=originalWindModel, integrator=rk4, verbose=True, tolerance=0):
 
     M = len(k_values)  # number of parallel optimization problems
     if not verbose:
@@ -109,10 +109,13 @@ def solve_multiple_planes_ocp_advanced(k_values: np.array, init_estimate=None, h
     opti.subject_to(V_s[:] >= 1e-2 / Vscale)
     opti.subject_to(gamma_s[:, 0] == -0.03925 / gammascale)
     opti.subject_to(alpha_s[:, 0] == min(0.1283, alphascale) / alphascale)
-    opti.subject_to(gamma_s[:, -1] == 0.1296 / gammascale)
-    opti.subject_to(
-        h_s[:, -1] >= h_final / hscale
-    )  # Extra constraint to get out of local minima.
+    if gamma_final is not None:
+        opti.subject_to(opti.bounded(gamma_final / gammascale - tolerance, gamma_s[:, -1], gamma_final / gammascale + tolerance))
+    if h_final is not None:
+        opti.subject_to(
+            h_s[:, -1] >= h_final / hscale
+    )
+
 
     for j in range(M):
         for i in range(N):
@@ -157,7 +160,7 @@ def solve_multiple_planes_ocp_advanced(k_values: np.array, init_estimate=None, h
         opti.set_initial(gamma_s, init_estimate["gamma"])
         opti.set_initial(alpha_s, init_estimate["alpha"])
         opti.set_initial(u_s, init_estimate["u"])
-        opti.set_initial(w, 0.5)
+        opti.set_initial(w, init_estimate["w"])
 
     # Cost function
     opti.minimize(-w)
