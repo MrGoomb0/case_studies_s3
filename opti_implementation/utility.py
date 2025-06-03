@@ -111,3 +111,108 @@ def splitSolution(solution):
             }
             solutions.append(solutions_entry)
         return solutions
+
+"""
+Repeats the solution given M times, to make it possible to act as an 
+initial estimate for a multiple plane OCP with more planes.
+---
+## Params:
+ - solution : the solution that is repeated.
+ - M : the amount of times the solution is repeated.
+---
+## Return:
+ - the repeated solution.
+"""
+def expandSolution(solution, M):
+    x = np.repeat([solution["x"]], M, axis=0)
+    h = np.repeat([solution["h"]], M, axis=0)
+    V = np.repeat([solution["V"]], M, axis=0)
+    gamma = np.repeat([solution["gamma"]], M, axis=0)
+    alpha = np.repeat([solution["alpha"]], M, axis=0)
+    
+    sol = {
+        "x" : x,
+        "h" : h,
+        "V" : V,
+        "gamma" : gamma,
+        "alpha" : alpha,
+        "u" : solution["u"],
+        "w" : solution["w"],
+    }
+
+    return sol
+
+"""
+Creates an initial estimate based on a previously calculated 'u', 
+but removes singularities, by only allowing a certain number of different values for 'u'.
+---
+## Params:
+ - u_init : 'u' that is used for the calculation of the initial estimate.
+ - k_values : the values for 'k' for each plane.
+ - levels : the number of different 'u' values that are used.
+---
+## Return:
+ - returns an initial estimate.
+"""
+def init_estimate(u_init, k_values, levels=3):
+    for i in range(len(u_init)):
+        found = False
+        level = -uscale + uscale / levels
+        while not found:
+            if u_init[i] <= level:
+                u_init[i] = level
+                found = True
+            else:
+                level += 2*uscale / levels
+
+    x = np.zeros((len(k_values), N + 1))
+    h = np.zeros((len(k_values), N + 1))
+    v = np.zeros((len(k_values), N + 1))
+    gamma = np.zeros((len(k_values), N + 1))
+    alpha = np.zeros((len(k_values), N + 1))
+  
+    x[:, 0] = 0
+    h[:, 0] = 0.6
+    v[:, 0] = 239.7
+    gamma[:, 0] = -0.03925
+    alpha[:, 0] = 0.1283
+
+    dt = T / N
+
+    for j in range(len(k_values)):
+        f = aircraft_ode(originalWindModel, k_values[j])
+        for i in range(0, N):
+            Yk = [x[j, i], h[j, i], v[j, i], gamma[j, i], alpha[j, i]]
+            y = rk4(
+                f,
+                Yk,
+                u_init[i],
+                dt * i,
+                dt
+            )
+            x[j, i + 1] = y[0]
+            h[j, i + 1] = y[1]
+            v[j, i + 1] = y[2]
+            gamma[j, i + 1] = y[3]
+            alpha[j, i + 1] = y[4]
+    if len(k_values) > 1:
+        sol = {
+            "x" : x,
+            "h" : h,
+            "V" : v,
+            'gamma' : gamma,
+            "alpha" : alpha,
+            "u" : u_init,
+            "w" : 0.5,
+        }
+    else:
+        sol = {
+            "x" : x[0,:],
+            "h" : h[0,:],
+            "V" : v[0,:],
+            'gamma' : gamma[0,:],
+            "alpha" : alpha[0,:],
+            "u" : u_init,
+            "w" : 0.5,
+        }
+    return sol
