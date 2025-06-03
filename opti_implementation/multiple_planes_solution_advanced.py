@@ -9,7 +9,7 @@ from .wind_models import originalWindModel
 from .integrators import rk4
 
 # Time and discretization
-tf = 100  # final time [sec]
+tf = 40  # final time [sec]
 N = 80  # number of control intervals
 dt = tf / N  # time step
 
