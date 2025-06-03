@@ -15,8 +15,7 @@ def rk4(f, xk, uk, tk, dt):
 
 
 def rk6(f, xk, uk, tk, dt):
-
-    k1 = f(xk, uk, Tk)
+    k1 = f(xk, uk, tk)
     k2 = f(xk + dt * (1/5 * k1), uk, tk + dt * 1/5)
     k3 = f(xk + dt * (3/40 * k1 + 9 / 40 * k2), uk, tk + dt * 3/10)
     k4 = f(xk + dt * (44/55 * k1 - 56/15 * k2 + 32/9 * k3), uk, tk  + dt * 4/5)
