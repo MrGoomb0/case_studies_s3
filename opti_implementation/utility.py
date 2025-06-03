@@ -46,12 +46,12 @@ making easy comparing of different solutions possible.
 ## Params:
  - solutions : array of solutions that have to be plotted.
 """
-def plotSolutions(solutions):
+def plotSolutions(solutions, T=40):
     figure, ax = plt.subplots(3, 2)
     legends = np.empty((3, 2, len(solutions)), dtype=np.dtypes.StrDType)
     for k, solution in enumerate(solutions): 
-        t = np.linspace(0, 40, len(solution["x"]))  
-        t_u = np.linspace(0, 40, len(solution["u"])) 
+        t = np.linspace(0, T, len(solution["x"]))  
+        t_u = np.linspace(0, T, len(solution["u"])) 
         
         x_k = solution["x"]
         ax[0, 0].plot(t, x_k)
@@ -95,7 +95,7 @@ Splits solution of the multiple plain set-up into designated single plane soluti
 """
 def splitSolution(solution):
     if solution['x'].ndim == 1: #Only 1 solution
-        return solution 
+        return [solution] 
     else:
         n_solutions = solution['x'].shape[0]
         solutions = []
