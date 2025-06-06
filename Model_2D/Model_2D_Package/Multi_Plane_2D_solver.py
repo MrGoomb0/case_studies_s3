@@ -1036,8 +1036,8 @@ def simulate_trajectories(u_opt, params, N, dxt, M=1000, plot=True):
         plt.grid(True)
         plt.show()
 
-    print(min(k_samples), max(k_samples))
-    print(cur_min_h_k)
+    print('min and max k from sample: ' + str(min(k_samples)) +  ' and ' + str(max(k_samples)))
+    print('k coresponding to min h '+ str(cur_min_h_k))
     return np.min(min_hs)
 
 
