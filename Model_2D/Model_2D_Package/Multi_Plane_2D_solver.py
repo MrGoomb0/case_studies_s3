@@ -14,9 +14,9 @@ class Parameters:
     dut: float = tf / nu    # time step
 
     # Aircraft physical constants
-    m: float = 4662         # mass [lb sec^2 / ft]
-    g: float = 32.172       # gravity [ft/sec^2]
-    delta: float = 0.03491  # thrust inclination angle [rad]
+    m: float = 4662                 # mass [lb sec^2 / ft]
+    g: float = 32.172               # gravity [ft/sec^2]
+    delta: float = 0.03491*pi/180   # thrust inclination angle [rad]
 
     # Thrust model coefficients: T = A0 + A1*V + A2*V^2
     A0: float = 0.4456e5    # [lb]
@@ -28,9 +28,9 @@ class Parameters:
     S: float = 0.1560e4     # reference surface area [ft^2]
 
     # Wind model 3 beta (smoothing) parameters
-    beta0: float = 0.4      # initial beta value (approximate)
-    beta_dot0: float = 0.2  # initial beta rate
-    sigma: float = 3        # time to reach beta = 1 [sec]
+    beta0: float = 0.3825                   # initial beta value (approximate)
+    beta_dot0: float = 0.2                  # initial beta rate
+    sigma: float = (1-beta0)/beta_dot0      # time to reach beta = 1 [sec]
 
     # C_D(alpha) = B0 + B1 * alpha + B2 * alpha**2, D = 0.5 * C_D(α) * ρ * S * V²
     B0: float = 0.1552
@@ -45,9 +45,9 @@ class Parameters:
     C2: float = -9.0277     # [rad^-2] — e.g., for moment or drag extension
 
     # Angle of attack & control constraints
-    umax: float = 0.05236           # max control input (rate of change of alpha) [rad/sec]
-    alphamax: float = 0.3           # max angle of attack [rad]
-    alpha_star: float = 0.20944     # changing pt of AoA
+    umax: float = 3*pi/180          # max control input (rate of change of alpha) [rad/sec]
+    alphamax: float = 17.2*pi/180   # max angle of attack [rad]
+    alpha_star: float = 12*pi/180   # changing pt of AoA
 
     # Wind model x parameters (piecewise smooth wind)
     a: float = 6e-8         # x transition midpoint [ft]
@@ -456,9 +456,9 @@ def plot_multi_plane_2D(w_opt: list[float], k_values: list[float]):
         print(min(x2_opt))
 
         plt.plot(x1_opt, x2_opt, '--', label=f'k = {k_values[i]:.3f}')
-        plt.xlabel('x')
     plt.grid()
-    plt.title('k comparison')
+    plt.xlabel('horizontal distance [ft]')
+    plt.ylabel('altitude [ft]')
     plt.legend()
     plt.show()
 
@@ -466,6 +466,7 @@ def plot_multi_plane_2D(w_opt: list[float], k_values: list[float]):
     plt.clf()
     plt.step(tgrid[:-1], u_opt, where='post')
     plt.xlabel('t')
+    plt.title('Optimal Control')
     plt.grid()
     plt.show()
 
