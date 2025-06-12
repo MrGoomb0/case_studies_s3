@@ -407,7 +407,8 @@ def plot_one_plane_2D(w_opt, is_bolza):
     plt.figure(figsize=(12, 6))
     plt.clf()
     plt.plot(x1_opt, x2_opt, '--')
-    plt.xlabel('t')
+    plt.xlabel('horizontal distance [ft]')
+    plt.ylabel('altitude [ft]')
     plt.grid()
     plt.show()
 
@@ -417,7 +418,7 @@ def plot_one_plane_2D(w_opt, is_bolza):
     plt.xlabel('t')
     plt.grid()
     plt.show()
-    return 0
+    return
 
 
 def plot_one_plane_2D_with_wind(w_opt, is_bolza,k_val):
@@ -504,10 +505,10 @@ def plot_one_plane_2D_with_wind(w_opt, is_bolza,k_val):
     plt.grid()
     plt.xlim([0, 40])
     plt.show()
-    return 0
+    return
 
 
-def reconstruction_one_plane_2D(u_opt, k_value, multipler):
+def reconstruction_one_plane_2D(u_opt, k_value, multipler=1):
     N = params.nu * multipler
     dt = params.tf / N
 

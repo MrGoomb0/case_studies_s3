@@ -220,8 +220,8 @@ def solve_ocp_multi_plane_min_h(k_values: list[float]):
             lbg += [0]
             ubg += [inf]
             g += [h_ddot_val]
-            lbg += [-2 * params.g]
-            ubg += [10 * params.g]
+            lbg += [-0.5 * params.g]
+            ubg += [1.5 * params.g]
 
         # Finial state constraint
         g += [Xk[3]]
@@ -395,8 +395,8 @@ def solve_ocp_multi_plane_min_h_initial_geuss_help(k_values: list[float], state_
 
             # Add to constraint list
             g += [h_ddot_val]
-            lbg += [-2 * params.g]
-            ubg += [10 * params.g]
+            lbg += [-0.5 * params.g]
+            ubg += [1.5 * params.g]
 
         # finial state constraint
         g += [Xk[3]]
@@ -720,9 +720,9 @@ def simulate_trajectories(u_opt: list[float], M: int, k_mid: float, plot=True):
                     params.g * np.cos(x4) / x3_safe + (wxdot * np.sin(x4) - whdot * np.cos(x4)) / x3_safe
             x2dotdot = x3dot * np.sin(x4) + x3 * x4dot * np.cos(x4) + whdot
 
-            if x2dotdot < -2 * params.g:
+            if x2dotdot < -0.5 * params.g:
                 violated_low = True
-            if x2dotdot > 10 * params.g:
+            if x2dotdot > 1.5 * params.g:
                 violated_high = True
 
         if violated_low:
