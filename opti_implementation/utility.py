@@ -1,7 +1,9 @@
 """
 Some utility functions.
 """
-from .multiple_planes_solution_advanced import solve_multiple_planes_ocp_advanced
+from .multiple_planes_solution_advanced import solve_multiple_planes_ocp_advanced, aircraft_ode
+from .wind_models import originalWindModel
+from .integrators import rk4
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -154,7 +156,7 @@ but removes singularities, by only allowing a certain number of different values
 ## Return:
  - returns an initial estimate.
 """
-def init_estimate(u_init, k_values, levels=3):
+def init_estimate(u_init, k_values, levels=3, uscale=0.05236, N=20, T=40):
     for i in range(len(u_init)):
         found = False
         level = -uscale + uscale / levels
