@@ -27,7 +27,7 @@ def analytic_wind_x(x_, k_):
 
 def analytic_wind_y(x_, h_, k_):
     h_safe = ca.fmax(h_, 10.0)
-    return k_ * h_safe / h_star * B_piecewise(x_)
+    return k_ * h_safe / h_star * B_cosh(x_)
 
 def analytic_wind_model():
     return analytic_wind_x(x_, k_), analytic_wind_h(x_, h_, k_)
