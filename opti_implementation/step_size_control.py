@@ -8,17 +8,22 @@ calculates where the subdivision is necessary for convergence,
 and returns the new time discretisation.
 """
 def refineSolution(sol1, sol2, ts1, ts2, tol, p):
+    if isinstance(sol1, dict):
+        sol1 = [sol1]
+        sol2 = [sol2]
     N = len(ts1)
     assert len(ts2) == 2*N -1 
     ts_new = [ts1[0]]
     for i in range(1, N):
-        xk1 = np.array([sol1['x'][i], sol1['h'][i], sol1['V'][i], sol1['gamma'][i], sol1['alpha'][i]])
-        xk2 = np.array([sol2['x'][2*i], sol2['h'][2*i], sol2['V'][2*i], sol2['gamma'][2*i], sol2['alpha'][2*i]])
-        s = np.linalg.norm(xk1 - xk2) / (2**p - 1)
-        dt = ts1[i] - ts1[i - 1]
-        q = s / (dt * tol)
-        if q > 1:
-            ts_new.append(ts2[2*i - 1])
+        for j in range(len(sol1)):
+            xk1 = np.array([sol1[j]['x'][i], sol1[j]['h'][i], sol1[j]['V'][i], sol1[j]['gamma'][i], sol1[j]['alpha'][i]])
+            xk2 = np.array([sol2[j]['x'][2*i], sol2[j]['h'][2*i], sol2[j]['V'][2*i], sol2[j]['gamma'][2*i], sol2[j]['alpha'][2*i]])
+            s = np.linalg.norm(xk1 - xk2) / (2**p - 1)
+            dt = ts1[i] - ts1[i - 1]
+            q = s / (dt * tol)
+            if q > 1:
+                ts_new.append(ts2[2*i - 1])
+                break
         ts_new.append(ts1[i])
     return np.array(ts_new)
 
@@ -43,9 +48,8 @@ def stepSizedIntegrationRefinement(f, x0, ts, u, dt_min, dt_max, tol, max_iter=1
     X = [xk]
     while tk < t_final:
         xk, dt = rk45(f, xk, uk, tk, dt, dt_min, dt_max, tol=tol, t_final=t_final, max_iter=max_iter)
-        X.append(float(xk))
         tk += dt
-        ts_new.append(tk)
+        ts_new.append(float(tk))
         index = 0
 
         while index != len(u) - 1:
@@ -53,7 +57,7 @@ def stepSizedIntegrationRefinement(f, x0, ts, u, dt_min, dt_max, tol, max_iter=1
                 break
             index += 1
         uk = u[index]
-    return np.array(X), np.array(ts_new)
+    return np.array(ts_new)
 
 
 """
