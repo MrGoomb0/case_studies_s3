@@ -45,7 +45,6 @@ def stepSizedIntegrationRefinement(f, x0, ts, u, dt_min, dt_max, tol, max_iter=1
     tk = ts[0]
     dt = ts[1] - ts[0]
     ts_new = [tk]
-    X = [xk]
     while tk < t_final:
         xk, dt = rk45(f, xk, uk, tk, dt, dt_min, dt_max, tol=tol, t_final=t_final, max_iter=max_iter)
         tk += dt
@@ -87,6 +86,3 @@ def rk45(f, xk, uk, tk, dt, dt_min, dt_max, tol, t_final, alpha_min=0.25, alpha_
                         break 
                 iteration += 1
         return y_6, dt
-
-def rk45V2(f, xk, uk, tk, dt, t_final):
-    return None
