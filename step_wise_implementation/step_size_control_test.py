@@ -2,8 +2,7 @@ from step_size_control import refineSolution, reduceIntervalBy2, rk45, stepSized
 import numpy as np
 import casadi as ca
 import matplotlib.pyplot as plt
-from advanced_wind_models import dx_A_cosh, dx_B_cosh, A_cosh, B_cosh
-from wind_models import A_piecewise, B_piecewise
+from wind_models import A_piecewise, B_piecewise, dx_A_cosh, dx_B_cosh, A_cosh, B_cosh
 
 TEST_1 = False
 TEST_2 = False
@@ -435,7 +434,6 @@ def test_4():
     N = 3
     t_final = 4600
     max_iter = 10
-    N = 3
     tol = 10**-5
     t1 = np.linspace(0, t_final, N)
     t2 = np.linspace(0, t_final, 2*N - 1)
