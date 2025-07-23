@@ -45,8 +45,8 @@ C_L_part_1 = @(alpha) c_alpha_A_0 + c_alpha_A_1 * alpha;
 C_L_part_2 = @(alpha) c_alpha_B_0 + c_alpha_B_1 * alpha + c_alpha_B_2 * alpha.^2;
 C_L = @(alpha) piecewise((alpha < 0.26), C_L_part_1(alpha), (0.26 < alpha), C_L_part_2(alpha));
 
-fontsize(lgd,70,'points')
-        fontsize(70,"points")
+fontsize(lgd,40,'points')
+        fontsize(40,"points")
 set(gcf,'Units','inches');
         screenposition = get(gcf,'Position');
         set(gcf,...
@@ -83,15 +83,15 @@ plot((0.26:0.01:0.8), C_D_part_2(0.26:0.01:0.8), ':blue', 'Linewidth',2);
 
 scatter(alpha_A320neo, C_D_A320neo, 'filled', 'red')
 
-lgd = legend("", "C_D calculated", "C_D fitted","C_D data", "location", "northeast");
+lgd = legend("", "C_D calculated", "C_D fitted","C_D data", "location", "northwest");
 ylim([0.02, 0.2])
 xlim([-0.02,0.5])
 
 ylabel("C_D")
 xlabel("\alpha")
 
-fontsize(lgd,70,'points')
-        fontsize(70,"points")
+fontsize(lgd,40,'points')
+        fontsize(40,"points")
 set(gcf,'Units','inches');
         screenposition = get(gcf,'Position');
         set(gcf,...
@@ -114,8 +114,8 @@ ylim([0, 3.5])
 
 lgd = legend("A320neo", "Location", 'northwest');
 
-fontsize(lgd,70,'points')
-        fontsize(70,"points")
+fontsize(lgd,40,'points')
+        fontsize(40,"points")
 
 set(gcf,'Units','inches');
         screenposition = get(gcf,'Position');
@@ -147,8 +147,8 @@ ylim([0, 3.5])
 
 lgd = legend("B-727", "Location", 'northwest');
 
-fontsize(lgd,70,'points')
-        fontsize(70,"points")
+fontsize(lgd,40,'points')
+        fontsize(40,"points")
 set(gcf,'Units','inches');
         screenposition = get(gcf,'Position');
         set(gcf,...
