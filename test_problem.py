@@ -4,10 +4,10 @@ Test file that shows how the modules can be used.
 
 from casadi import *
 import numpy as np
-from actual_problem.wind_model import easyWindModel, windModel, windModelChebychev
-from actual_problem.problem_def import problem2D
-from actual_problem.integrators import cranknicholson, expEuler, rungakutta6
-from actual_problem.solvers import nlpsolver, initialEstimatorUsingExpEuler
+from old_NLP_implementation.wind_model import easyWindModel, windModel, windModelChebychev
+from old_NLP_implementation.problem_def import problem2D
+from old_NLP_implementation.integrators import cranknicholson, expEuler, rungakutta6
+from old_NLP_implementation.solvers import nlpsolver, initialEstimatorUsingExpEuler
 import matplotlib.pyplot as plt
 
 """
