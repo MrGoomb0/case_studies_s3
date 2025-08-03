@@ -1,0 +1,178 @@
+\section{Numerical Experiments}
+In this section, we present the basic two random variables model and its extension.
+
+\subsection{Parameters}
+
+The parameters used in the numerical experiments are listed in Table \ref{tab:parameters}.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Parameter} & \textbf{Values} \\
+        \midrule
+        Wind intensity factor ($k$) & $\mathcal{N}(1.0, 0.08)$ \\
+        Wind width factor ($s$) & $\mathcal{N}(1.0, 0.15)$ \\
+        Second wind intensity factor ($k'$) & $\mathcal{N}(1.05, 0.05)$ \\
+        Total simulation time ($T$) & $50$ seconds \\
+        Maximum solving time & $120$ seconds \\
+        Sample size per level & $1000$ \\
+        Total runs & $100$ \\
+        \bottomrule
+    \end{tabular}
+    \caption{Parameters for Numerical Experiments}
+    \label{tab:parameters}
+\end{table}
+
+The wind intensity and wind shear width are set with realistic variances. The second measure of wind intensity is defined to be higher than the original with smaller variance, simulating improved accuracy. These parameters can be adjusted later to fit specific wind profiles.
+
+Since the failure probabilities are very small, subset simulation \cite{hd_ss} is applied with $1000$ samples per level. The mean of $100$ runs is used as the estimation of failure probability. Typically, the acceptance rate is constrained within $[0.2, 0.5]$.
+
+\subsection{Order of Polynomial Chaos Expansions (PCEs)}
+
+To balance solving time and approximation accuracy, the problem is solved using different orders of PCEs. The results are shown in Figure \ref{fig:order}. The first-order PCE is a linear approximation, while the second-order PCE includes quadratic terms, the third-order PCE includes cubic terms, and the fourth-order PCE includes quartic terms. Higher-order PCEs can capture more complex relationships but require more computational resources.
+
+The nodes and basis function are choosen with chaospy \cite{FEINBERG201546} by the Gauss-Hermite quadrature rule, which is suitable for Gaussian random variables. The number of nodes are $3$ for first order, $6$ for second order, $10$ for third order, and $16$ for the forth order. 
+
+The control input $u$ is plotted over time for each PCE order.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Figurers/order.png}
+    \caption{Control Input Over Time for Different PCE Orders}
+    \label{fig:order}
+\end{figure}
+
+The maximum difference between order 1 and order 4 is $0.076603$, $0.021076$ between order 2 and order 4, and $0.006465$ between order 3 and order 4. The results show that the first-order PCE is not sufficient to capture the dynamics of the system, as it leads to a significantly higher control input compared to higher-order PCEs. The second-order PCE provides a good balance between accuracy and computational cost, while the third and fourth orders yield diminishing returns in terms of control input accuracy.
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/order-traj.png}
+    \caption{Trajectories of Different PCE Orders under the Same Wind}
+    \label{fig:order-traj}
+\end{figure}
+
+The trajectories are plotted in Figure \ref{fig:order-traj}. The trajectories of the second and third order PCEs are very similar, indicating that the second order PCE is sufficient for this problem. Hence, in the following experiments, we can safely choose the second order PCE.
+
+\subsection{Step control strategy}
+
+Finer time grids provide better performance but significantly increase computing time. The strategy applied in our solver is straightforward: we compare two adjoint controls $u$, and if the difference exceeds the given tolerance, we halve the time grid and solve again within the set maximum iterations.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/adp.png}
+    \caption{Adaptive Control $u$ on Adaptive Mesh (Comparison)}
+    \label{fig:adp}
+\end{figure}
+
+The optimal control results are shown in Figure \ref{fig:adp}. We can see the two methods in section \ref{sec:step-size_control} are always refine the time grid. Comparing to those, the 3-iteration and 5-iteration results have a similar trend, but have much faster solving time.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/adp-traj.png}
+    \caption{Trajectories of Different Refine Methods under the Same Wind}
+    \label{fig:adp-traj}
+\end{figure}
+
+The trajectories are plotted in Figure \ref{fig:adp-traj}. The small differences among different strategies indicate that it is safe to choose the fastest strategy — the $\delta u$-based 3-iteration method.
+
+\subsection{Additional measure during flying}
+The accuracy of the polynomial chaos (PC) expansion may degrade over long-term simulations due to factors such as truncation errors, numerical integration inaccuracies, and the diminishing suitability of the polynomial basis for long-time integration \cite{gerritsma2010time, xu2018propagating}. To address these challenges, we further enhance the model in this section using two complementary approaches: (i) periodic re-measurement of uncertain parameters, and (ii) Bayesian parameter estimation for continuous refinement of the probabilistic model.
+
+We run two sets of experiments: one with two measurements at the beginning and at $t=15$ seconds, and the other with two measurements at the beginning and at $t=30$ seconds.
+
+There are big difference of the optimal control input $u$ in the first set of experiments, as shown in Figure \ref{fig:meas15}. The trajectories are plotted in Figure \ref{fig:meas15-traj}. The control input without Bayesian update is significantly higher than other methods, which leads to a lower failure probability.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/update15.png}
+    \caption{Comparison of Adaptive Control $u$ With and without Bayesian Update at Time $15$s}
+    \label{fig:meas15}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/update15-traj.png}
+    \caption{Adaptive Mesh Variation with Fixed $k$ (Double Measure at Time $15$s)}
+    \label{fig:meas15-traj}
+\end{figure}
+
+The subset simulation results are shown in Figure \ref{fig:fp15}. The adaptive time grid strategy significantly improves the control input $u$. This is because the adaptive time grid allows for more frequent updates of the control input, leading to a more accurate representation of the system dynamics.
+
+More closer look at the results in Table \ref{tab:failure_probabilities15}. Among the adaptive methods, the Double Measure strategy delivers the most stable and efficient performance across all tested wind intensities. It often achieves the lowest or near-lowest failure probability estimates with relatively small standard deviations. While the Bayesian variant occasionally yields higher estimates, likely due to uncertainty in posterior weighting, it still performs significantly better than the baseline. Overall, the results validate the effectiveness of adaptive Subset Simulation techniques in rare-event estimation under uncertain wind conditions.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ccccc}
+    \toprule
+    \textbf{$k_{\text{mean}}$} & \textbf{No Adapt.} & \textbf{Adapt.} & \textbf{Double} & \textbf{Double+Bayes} \\
+    \midrule
+    $0.950$ & $4.86{\rm e}{-2} \pm 6.3{\rm e}{-3}$ & $1.52{\rm e}{-2} \pm 2.6{\rm e}{-3}$ & $1.12{\rm e}{-2} \pm 1.8{\rm e}{-3}$ & $1.59{\rm e}{-2} \pm 2.4{\rm e}{-3}$ \\
+    \midrule
+    $0.970$ & $5.30{\rm e}{-2} \pm 7.2{\rm e}{-3}$ & $1.49{\rm e}{-2} \pm 2.5{\rm e}{-3}$ & $1.18{\rm e}{-2} \pm 2.4{\rm e}{-3}$ & $1.67{\rm e}{-2} \pm 2.9{\rm e}{-3}$ \\
+    \midrule
+    $0.990$ & $5.71{\rm e}{-2} \pm 8.6{\rm e}{-3}$ & $1.52{\rm e}{-2} \pm 3.3{\rm e}{-3}$ & $1.16{\rm e}{-2} \pm 3.0{\rm e}{-3}$ & $1.71{\rm e}{-2} \pm 3.2{\rm e}{-3}$ \\
+    \midrule
+    $1.010$ & $6.79{\rm e}{-2} \pm 1.3{\rm e}{-2}$ & $1.68{\rm e}{-2} \pm 4.6{\rm e}{-3}$ & $1.18{\rm e}{-2} \pm 3.9{\rm e}{-3}$ & $1.91{\rm e}{-2} \pm 5.0{\rm e}{-3}$ \\
+    \midrule
+    $1.030$ & $1.22{\rm e}{-1} \pm 1.8{\rm e}{-2}$ & $3.28{\rm e}{-2} \pm 7.1{\rm e}{-3}$ & $2.30{\rm e}{-2} \pm 6.2{\rm e}{-3}$ & $3.64{\rm e}{-2} \pm 7.1{\rm e}{-3}$ \\
+    \midrule
+    $1.050$ & $2.03{\rm e}{-1} \pm 2.9{\rm e}{-2}$ & $5.82{\rm e}{-2} \pm 9.3{\rm e}{-3}$ & $4.19{\rm e}{-2} \pm 8.2{\rm e}{-3}$ & $6.16{\rm e}{-2} \pm 9.7{\rm e}{-3}$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{Estimated failure probabilities ($\pm$ std) under different strategies (final updated)}
+    \label{tab:failure_probabilities15}
+\end{table}    
+
+The results updated at 30 seconds are compared with no updated controls as in Figure \ref{fig:update}. We can see the control inputs $u$ are similar. This is because the second measure of wind intensity happens at $t=30$ seconds, which is close to the other boundary of the wind shear comparing to the measure at $t=15$ seconds.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/update.png}
+    \caption{Comparison of Adaptive Control $u$ With and without Bayesian Update at Time $30$s}
+    \label{fig:update}
+\end{figure}
+
+The subset simulation results are shown in \ref{fig:fp30}. We can also see a significant improvement in the control input $u$ when the adaptive time grid is applied.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figurers/fp30.png}
+    \caption{Subset Simulation Results for $30$s measurement}
+    \label{fig:fp30}
+\end{figure}
+
+
+It is worth mentioning that the adaptive time grid strategy is more robust than the fixed time grid strategy. The increase in failure probability is significantly smaller compared to the fixed time grid strategy when the wind intensity exceeds $50$ (i.e., when the intensity factor $k$ is greater than $1.0$). This is because the adaptive time grid strategy adjusts the time grid dynamically based on the control input, resulting in a more accurate representation of the system dynamics.
+
+Further comparisons of the failure probabilities are presented in Table \ref{tab:failure_probabilities}. The "Double" and "Double+Bayes" strategies yield similar results, indicating that the Bayesian update does not significantly enhance performance in this scenario. The single measurement strategy ("Adapt.") shows only slightly better performance than the double measurement strategy. This is because the wind profile in the experiment remains constant over time, making the Bayesian update less impactful on the control input. The two-measurement strategy still performs similarly to methods designed for fixed wind profiles, even when the two measurements include errors. This suggests that the double measurement strategy is more robust than the single measurement strategy, as it can better handle uncertainties in the wind profile.
+
+\begin{table}[ht]
+\label{tab:failure_probabilities}
+    \centering
+    \begin{tabular}{ccccc}
+    \toprule
+    \textbf{$k_{\text{mean}}$} & \textbf{No Adapt.} & \textbf{Adapt.} & \textbf{Double} & \textbf{Double+Bayes} \\
+    \midrule
+    $0.950$ & $3.73{\rm e}{-2} \pm 7.3{\rm e}{-3}$ & $7.60{\rm e}{-3} \pm 3.1{\rm e}{-3}$ & $8.00{\rm e}{-3} \pm 3.0{\rm e}{-3}$ & $7.52{\rm e}{-3} \pm 3.2{\rm e}{-3}$ \\
+    \midrule
+    $0.970$ & $6.82{\rm e}{-2} \pm 9.8{\rm e}{-3}$ & $1.60{\rm e}{-2} \pm 4.7{\rm e}{-3}$ & $1.56{\rm e}{-2} \pm 4.3{\rm e}{-3}$ & $1.52{\rm e}{-2} \pm 4.2{\rm e}{-3}$ \\
+    \midrule
+    $0.990$ & $1.09{\rm e}{-1} \pm 1.3{\rm e}{-2}$ & $3.07{\rm e}{-2} \pm 6.1{\rm e}{-3}$ & $2.98{\rm e}{-2} \pm 5.4{\rm e}{-3}$ & $2.93{\rm e}{-2} \pm 5.1{\rm e}{-3}$ \\
+    \midrule
+    $1.010$ & $7.17{\rm e}{-2} \pm 1.3{\rm e}{-2}$ & $1.60{\rm e}{-2} \pm 3.7{\rm e}{-3}$ & $1.63{\rm e}{-2} \pm 4.0{\rm e}{-3}$ & $1.64{\rm e}{-2} \pm 4.3{\rm e}{-3}$ \\
+    \midrule
+    $1.030$ & $1.24{\rm e}{-1} \pm 2.1{\rm e}{-2}$ & $3.15{\rm e}{-2} \pm 6.2{\rm e}{-3}$ & $3.27{\rm e}{-2} \pm 6.3{\rm e}{-3}$ & $3.35{\rm e}{-2} \pm 7.3{\rm e}{-3}$ \\
+    \midrule
+    $1.050$ & $2.04{\rm e}{-1} \pm 2.4{\rm e}{-2}$ & $5.79{\rm e}{-2} \pm 9.8{\rm e}{-3}$ & $5.81{\rm e}{-2} \pm 9.2{\rm e}{-3}$ & $5.82{\rm e}{-2} \pm 9.5{\rm e}{-3}$ \\
+    \bottomrule
+    \end{tabular}
+    \caption{Estimated failure probabilities ($\pm$ std) under different strategies}
+\end{table}
+
+\section{Conclusion}
+
+This report has presented a numerical study of the abort landing problem using polynomial chaos expansions (PCEs) and adaptive time grids. The findings demonstrate that PCEs effectively capture the uncertainty in the wind profile, while the adaptive time grid strategy significantly enhances the performance of the control input.
+
+The model is highly adaptable and can be extended to incorporate additional measures of wind intensity, shear width, and other uncertain parameters. Furthermore, Bayesian updates can be employed to continuously refine the probabilistic model, enabling dynamic adjustments and improved accuracy.
+
+Overall, this study highlights the effectiveness of combining PCEs with adaptive strategies to address uncertainty-driven challenges in aviation and similar domains.
