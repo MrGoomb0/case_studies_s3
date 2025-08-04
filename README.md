@@ -30,6 +30,9 @@ Abort landings are critical maneuvers that must be executed safely, even in the 
 ```
 case_studies_s3/
   ├── A320neo_model/ # Aircraft dynamics and physical constraints
+  ├── Determenistic_OCP/ # Determenistic optimization
+  │   ├── solvers_and_functions_package # Python package containing solvers and other related functions
+  │   ├── Determenistic_OCP.ipynb # Exemple code on how to use the solvers
   ├── PCE/ # PCE-based stochastic optimization
   │   ├── All_in_Poster.ipynb # Summary of progress for poster
   │   ├── numerical_experiments.ipynb # Main experimental notebook
@@ -46,6 +49,7 @@ case_studies_s3/
 
 - **Chenhong Lin** — Wind modeling, PCE design, and stochastic control strategy
 - **Miaowen Dong** — Code implementation of the stochastic optimal control problem under uncertain windshear and numerical experimentation
+- **Irma Svensson** — Code implementation of the determenistic optimal control problem
 
 ---
 
